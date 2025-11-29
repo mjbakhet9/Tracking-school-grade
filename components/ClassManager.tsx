@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { SchoolClass, Subject } from '../types';
-import { Plus, Trash2, BookOpen, Save } from 'lucide-react';
+import { Plus, Trash2, BookOpen, AlertCircle } from 'lucide-react';
 
 interface ClassManagerProps {
   classes: SchoolClass[];
   setClasses: React.Dispatch<React.SetStateAction<SchoolClass[]>>;
+  maxClasses: number;
 }
 
-export const ClassManager: React.FC<ClassManagerProps> = ({ classes, setClasses }) => {
+export const ClassManager: React.FC<ClassManagerProps> = ({ classes, setClasses, maxClasses }) => {
   const [newClassName, setNewClassName] = useState('');
   const [selectedClassId, setSelectedClassId] = useState<string | null>(classes.length > 0 ? classes[0].id : null);
   
@@ -17,6 +18,12 @@ export const ClassManager: React.FC<ClassManagerProps> = ({ classes, setClasses 
 
   const addClass = () => {
     if (!newClassName.trim()) return;
+    
+    if (classes.length >= maxClasses) {
+      alert(`عذراً، لقد وصلت للحد الأقصى المسموح به من الصفوف (${maxClasses}). يرجى ترقية الاشتراك.`);
+      return;
+    }
+
     const newClass: SchoolClass = {
       id: Date.now().toString(),
       name: newClassName,
@@ -67,6 +74,7 @@ export const ClassManager: React.FC<ClassManagerProps> = ({ classes, setClasses 
   };
 
   const selectedClass = classes.find(c => c.id === selectedClassId);
+  const isLimitReached = classes.length >= maxClasses;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -74,23 +82,33 @@ export const ClassManager: React.FC<ClassManagerProps> = ({ classes, setClasses 
       <div className="md:col-span-1 bg-white p-4 rounded-lg shadow border border-gray-200">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-indigo-800">
           <BookOpen size={20} />
-          الصفوف الدراسية
+          الصفوف الدراسية ({classes.length}/{maxClasses})
         </h3>
         
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={newClassName}
-            onChange={(e) => setNewClassName(e.target.value)}
-            placeholder="اسم الصف (مثلاً: الخامس أ)"
-            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm text-gray-900"
-          />
-          <button 
-            onClick={addClass}
-            className="bg-indigo-700 text-white p-2 rounded hover:bg-indigo-800 transition"
-          >
-            <Plus size={20} />
-          </button>
+        <div className="flex flex-col gap-2 mb-4">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newClassName}
+              onChange={(e) => setNewClassName(e.target.value)}
+              placeholder="اسم الصف (مثلاً: الخامس أ)"
+              className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm text-gray-900"
+              disabled={isLimitReached}
+            />
+            <button 
+              onClick={addClass}
+              disabled={isLimitReached}
+              className={`text-white p-2 rounded transition ${isLimitReached ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-700 hover:bg-indigo-800'}`}
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+          {isLimitReached && (
+            <p className="text-xs text-red-600 font-bold flex items-center gap-1">
+              <AlertCircle size={12} />
+              لقد استهلكت جميع الصفوف المتاحة في باقتك.
+            </p>
+          )}
         </div>
 
         <ul className="space-y-2">

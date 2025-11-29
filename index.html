@@ -35,8 +35,10 @@
         }
         @page {
           size: A4;
-          margin: 10mm;
+          margin: 0;
         }
+        /* Ensure specific elements are hidden or styled correctly */
+        .no-print { display: none !important; }
       }
     </style>
   <script type="importmap">
@@ -45,6 +47,7 @@
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
     "recharts": "https://aistudiocdn.com/recharts@^3.5.0"
   }
@@ -53,5 +56,7 @@
 </head>
   <body>
     <div id="root"></div>
+    <!-- CRITICAL FIX: Explicitly load the entry point for Netlify/Vite -->
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

@@ -81,8 +81,8 @@ export const Settings: React.FC<SettingsProps> = ({
       if(confirm('تأكيد نهائي: سيتم مسح كل شيء!')) {
         setClasses([]);
         setStudents([]);
-        localStorage.removeItem('classes');
-        localStorage.removeItem('students');
+        // We do NOT clear localStorage globally here anymore, just the state passed down
+        // The parent component handles the syncing to the user-specific storage key
         alert('تم تصفير النظام بنجاح.');
       }
     }

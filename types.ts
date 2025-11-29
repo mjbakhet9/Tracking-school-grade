@@ -17,7 +17,7 @@ export interface Student {
   scores: Record<string, number>; // subjectId -> score
   totalScore?: number;
   percentage?: number;
-  gradeLabel?: string; // New field for Grade (Excellent, Very Good, etc.)
+  gradeLabel?: string;
   rank?: number;
   rankLabel?: string;
 }
@@ -29,10 +29,26 @@ export interface SchoolSettings {
   logoUrl?: string; // Base64 image
 }
 
+export interface SubscriptionLimits {
+  maxClasses: number;
+  maxStudentsPerClass: number;
+  expiryDate: string; // ISO Date string
+}
+
+export interface User {
+  username: string;
+  password?: string; // In a real app, this should be hashed. Here simple storage.
+  role: 'admin' | 'user';
+  limits: SubscriptionLimits;
+  isActive: boolean;
+  schoolName?: string;
+}
+
 export enum TabView {
   DASHBOARD = 'DASHBOARD',
   CLASSES = 'CLASSES',
   ENTRY = 'ENTRY',
   RESULTS = 'RESULTS',
   SETTINGS = 'SETTINGS',
+  ADMIN = 'ADMIN', // New tab for developer
 }
